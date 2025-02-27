@@ -10,9 +10,9 @@ public class ParkmanContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ParkingTransaction>()
-            .HasOne(pt => pt.ParkingLot)  // ✅ Defines relationship
+            .HasOne(pt => pt.ParkingLot)
             .WithMany()
-            .HasForeignKey(pt => pt.LotId)
+            .HasForeignKey(pt => pt.ParkingLotId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ParkingTransaction>()
