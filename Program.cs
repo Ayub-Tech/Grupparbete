@@ -5,17 +5,22 @@ using Microsoft.EntityFrameworkCore;
 
 class Program
 {
+
     static void Main()
     {
         using var context = new ParkmanContext();
         InsertVehicles(context);
 
-        Console.WriteLine("1. Parkera fordon\n2. Checka ut fordon\n3. Visa alla parkeringar\nVälj ett alternativ: ");
-        var choice = Console.ReadLine();
-        if (choice == "1") RegisterParking(context);
-        else if (choice == "2") CheckoutVehicle(context);
-        else if (choice == "3") DisplayParkingTransactions(context);
-        else Console.WriteLine("Ogiltigt val.");
+        while (true)
+        {
+            Console.WriteLine("1. Parkera fordon\n2. Checka ut fordon\n3. Visa alla parkeringar\n4. Avsluta\nVälj ett alternativ: ");
+            var choice = Console.ReadLine();
+            if (choice == "1") RegisterParking(context);
+            else if (choice == "2") CheckoutVehicle(context);
+            else if (choice == "3") DisplayParkingTransactions(context);
+            else if (choice == "4") break;
+            else Console.WriteLine("Ogiltigt val. Försök igen.");
+        }
     }
 
     static void RegisterParking(ParkmanContext context)

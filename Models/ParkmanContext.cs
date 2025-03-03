@@ -7,6 +7,14 @@ public class ParkmanContext : DbContext
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<ParkingTransaction> ParkingTransactions { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Server=localhost;Database=ParkmanDB;Trusted_Connection=True;");
+        }
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ParkingTransaction>()
