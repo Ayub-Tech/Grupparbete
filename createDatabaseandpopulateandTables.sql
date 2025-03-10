@@ -1,4 +1,4 @@
--- CREATE DATABASE parkman;
+/*-- CREATE DATABASE parkman;
 GO
 USE parkman;
 GO
@@ -10,12 +10,6 @@ CREATE TABLE ParkingLot (
     capacity INT NOT NULL
 );
 
--- Skapa tabellen för fordon
-CREATE TABLE Vehicle (
-    vehicle_id INT IDENTITY(1,1) PRIMARY KEY,
-    license_plate VARCHAR(20) UNIQUE NOT NULL,
-    owner_name VARCHAR(100) NOT NULL,
-    vehicle_type VARCHAR(20) CHECK (vehicle_type IN ('Car', 'Motorcycle', 'Truck')) NOT NULL
 );
 
 CREATE TABLE Vehicle (
@@ -52,3 +46,24 @@ VALUES
 (1, 1, '2025-03-10 08:00:00', '2025-03-10 12:00:00', 80.00),
 (2, 2, '2025-03-10 09:00:00', '2025-03-10 11:30:00', 60.00),
 (3, 3, '2025-03-10 10:00:00', NULL, 0.00);  -- Ingen utcheckning än
+
+INSERT INTO ParkingLots (name, location, capacity)
+VALUES 
+('North Lot', 'North District', 120),
+('South Park', 'South District', 90),
+('Main Street Lot', 'Main City', 200),
+('Airport Parking', 'Airport District', 300),
+('Suburb Lot', 'Suburbs', 50);
+
+-- Kontrollera alla referens- och främmande nycklar
+CREATE TABLE ParkingTransaction (
+    transaction_id INT IDENTITY(1,1) PRIMARY KEY,
+    lot_id INT,
+    vehicle_id INT,
+    entry_time DATETIME NOT NULL DEFAULT GETDATE(),
+    exit_time DATETIME NULL,
+    fee DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (lot_id) REFERENCES ParkingLot(lot_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_id) REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE
+);
+SELECT * FROM [parkman].[dbo].[Vehicle];

@@ -73,7 +73,8 @@ class Program
         {
             transactions.ForEach(transaction =>
             {
-                Console.WriteLine($"ID: {transaction.TransactionId}, Plats: {transaction.ParkingLot?.Name ?? "Okänd"}, Fordon: {transaction.Vehicle?.LicensePlate ?? "Okänt"}, Avgift: {transaction.Fee:C}");
+                Console.WriteLine($"Plats-ID: {transaction.ParkingLotId}, Plats: {transaction.ParkingLot?.Name ?? "Okänd"}, Fordon: {transaction.Vehicle?.LicensePlate ?? "Okänt"}, Avgift: {transaction.Fee:C}");
+
             });
         }
     }
