@@ -9,7 +9,7 @@ class Program
     static void Main()
     {
         using var context = new ParkmanContext();
-        InsertVehicles(context);
+        InsertVehicles(context);  // Lägg till testfordon vid start
 
         while (true)
         {
@@ -32,9 +32,20 @@ class Program
         Console.Write("Parkeringsplats-ID: ");
         if (!int.TryParse(Console.ReadLine(), out int lotId)) { Console.WriteLine("Ogiltigt ID."); return; }
 
-        context.ParkingTransactions.Add(new ParkingTransaction { VehicleId = vehicle.VehicleId, ParkingLotId = lotId, StartTime = DateTime.Now });
+        var parkingTransaction = new ParkingTransaction
+        {
+            VehicleId = vehicle.VehicleId,
+            ParkingLotId = lotId,
+            StartTime = DateTime.Now
+        };
+
+        context.ParkingTransactions.Add(parkingTransaction);
         context.SaveChanges();
+
         Console.WriteLine("Parkering registrerad!");
+
+        // Visa alla parkeringstransaktioner för felsökning
+        DisplayParkingTransactions(context);
     }
 
     static void CheckoutVehicle(ParkmanContext context)
@@ -52,8 +63,19 @@ class Program
 
     static void DisplayParkingTransactions(ParkmanContext context)
     {
-        context.ParkingTransactions.Include(pt => pt.ParkingLot).Include(pt => pt.Vehicle)
-            .ToList().ForEach(transaction => Console.WriteLine($"ID: {transaction.TransactionId}, Plats: {transaction.ParkingLot?.Name ?? "Okänd"}, Fordon: {transaction.Vehicle?.LicensePlate ?? "Okänt"}, Avgift: {transaction.Fee:C}"));
+        var transactions = context.ParkingTransactions.Include(pt => pt.ParkingLot).Include(pt => pt.Vehicle).ToList();
+
+        if (transactions.Count == 0)
+        {
+            Console.WriteLine("Inga parkeringstransaktioner hittades.");
+        }
+        else
+        {
+            transactions.ForEach(transaction =>
+            {
+                Console.WriteLine($"ID: {transaction.TransactionId}, Plats: {transaction.ParkingLot?.Name ?? "Okänd"}, Fordon: {transaction.Vehicle?.LicensePlate ?? "Okänt"}, Avgift: {transaction.Fee:C}");
+            });
+        }
     }
 
     static void InsertVehicles(ParkmanContext context)

@@ -11,21 +11,28 @@ public class ParkmanContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=ParkmanDB;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=Ayub-Tech\\SQLEXPRESS;Database=parkman;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Definiera primärnyckeln explicit för ParkingLot
+        modelBuilder.Entity<ParkingLot>()
+            .HasKey(pl => pl.LotId);
+
+        modelBuilder.Entity<ParkingTransaction>()
+            .HasKey(pt => pt.TransactionId);
+
         modelBuilder.Entity<ParkingTransaction>()
             .HasOne(pt => pt.ParkingLot)
-            .WithMany()
+            .WithMany(pl => pl.ParkingTransactions)
             .HasForeignKey(pt => pt.ParkingLotId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ParkingTransaction>()
             .HasOne(pt => pt.Vehicle)
-            .WithMany()
+            .WithMany(v => v.ParkingTransactions)
             .HasForeignKey(pt => pt.VehicleId)
             .OnDelete(DeleteBehavior.Cascade);
     }
